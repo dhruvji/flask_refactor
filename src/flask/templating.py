@@ -80,7 +80,7 @@ class DispatchingJinjaLoader(BaseLoader):
                 rv = None
             attempts.append((loader, srcobj, rv))
 
-        from .debughelpers import explain_template_loading_attempts
+        from .helpers import explain_template_loading_attempts
 
         explain_template_loading_attempts(self.app, template, attempts)
 

@@ -122,7 +122,7 @@ class Request(RequestBase):
             and self.mimetype != "multipart/form-data"
             and not self.files
         ):
-            from .debughelpers import attach_enctype_error_multidict
+            from .helpers import attach_enctype_error_multidict
 
             attach_enctype_error_multidict(self)
 

@@ -2,15 +2,9 @@ from __future__ import annotations
 
 import typing as t
 
-from jinja2.loaders import BaseLoader
 from werkzeug.routing import RequestRedirect
 
-from .blueprints import Blueprint
-from .globals import request_ctx
-from .sansio.app import App
-
 if t.TYPE_CHECKING:
-    from .sansio.scaffold import Scaffold
     from .wrappers import Request
 
 
@@ -78,101 +72,4 @@ class FormDataRoutingRedirect(AssertionError):
         super().__init__("".join(buf))
 
 
-def attach_enctype_error_multidict(request: Request) -> None:
-    """Patch ``request.files.__getitem__`` to raise a descriptive error
-    about ``enctype=multipart/form-data``.
 
-    :param request: The request to patch.
-    :meta private:
-    """
-    oldcls = request.files.__class__
-
-    class newcls(oldcls):  # type: ignore[valid-type, misc]
-        def __getitem__(self, key: str) -> t.Any:
-            try:
-                return super().__getitem__(key)
-            except KeyError as e:
-                if key not in request.form:
-                    raise
-
-                raise DebugFilesKeyError(request, key).with_traceback(
-                    e.__traceback__
-                ) from None
-
-    newcls.__name__ = oldcls.__name__
-    newcls.__module__ = oldcls.__module__
-    request.files.__class__ = newcls
-
-
-def _dump_loader_info(loader: BaseLoader) -> t.Iterator[str]:
-    yield f"class: {type(loader).__module__}.{type(loader).__name__}"
-    for key, value in sorted(loader.__dict__.items()):
-        if key.startswith("_"):
-            continue
-        if isinstance(value, (tuple, list)):
-            if not all(isinstance(x, str) for x in value):
-                continue
-            yield f"{key}:"
-            for item in value:
-                yield f"  - {item}"
-            continue
-        elif not isinstance(value, (str, int, float, bool)):
-            continue
-        yield f"{key}: {value!r}"
-
-
-def explain_template_loading_attempts(
-    app: App,
-    template: str,
-    attempts: list[
-        tuple[
-            BaseLoader,
-            Scaffold,
-            tuple[str, str | None, t.Callable[[], bool] | None] | None,
-        ]
-    ],
-) -> None:
-    """This should help developers understand what failed"""
-    info = [f"Locating template {template!r}:"]
-    total_found = 0
-    blueprint = None
-    if request_ctx and request_ctx.request.blueprint is not None:
-        blueprint = request_ctx.request.blueprint
-
-    for idx, (loader, srcobj, triple) in enumerate(attempts):
-        if isinstance(srcobj, App):
-            src_info = f"application {srcobj.import_name!r}"
-        elif isinstance(srcobj, Blueprint):
-            src_info = f"blueprint {srcobj.name!r} ({srcobj.import_name})"
-        else:
-            src_info = repr(srcobj)
-
-        info.append(f"{idx + 1:5}: trying loader of {src_info}")
-
-        for line in _dump_loader_info(loader):
-            info.append(f"       {line}")
-
-        if triple is None:
-            detail = "no match"
-        else:
-            detail = f"found ({triple[1] or '<string>'!r})"
-            total_found += 1
-        info.append(f"       -> {detail}")
-
-    seems_fishy = False
-    if total_found == 0:
-        info.append("Error: the template could not be found.")
-        seems_fishy = True
-    elif total_found > 1:
-        info.append("Warning: multiple loaders returned a match for the template.")
-        seems_fishy = True
-
-    if blueprint is not None and seems_fishy:
-        info.append(
-            "  The template was looked up from an endpoint that belongs"
-            f" to the blueprint {blueprint!r}."
-        )
-        info.append("  Maybe you did not place a template in the right folder?")
-        info.append("  See https://flask.palletsprojects.com/blueprints/#templates")
-
-    app.logger.info("\n".join(info))
