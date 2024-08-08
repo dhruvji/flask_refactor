@@ -511,7 +511,7 @@ def send_file(
     )
 
 
-def send_from_directory(
+def send_from_directory_helper(
     directory: os.PathLike[str] | str,
     path: os.PathLike[str] | str,
     **kwargs: t.Any,

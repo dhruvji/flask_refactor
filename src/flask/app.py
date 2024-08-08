@@ -39,7 +39,7 @@ from .globals import session
 from .helpers import get_debug_flag
 from .helpers import get_flashed_messages
 from .helpers import get_load_dotenv
-from .helpers import send_from_directory
+from .helpers import send_from_directory_helper
 from .sansio.app import App
 from .sansio.scaffold import _sentinel
 from .sessions import SecureCookieSessionInterface
@@ -316,7 +316,7 @@ class Flask(App):
         # send_file only knows to call get_send_file_max_age on the app,
         # call it here so it works for blueprints too.
         max_age = self.get_send_file_max_age(filename)
-        return send_from_directory(
+        return send_from_directory_helper(
             t.cast(str, self.static_folder), filename, max_age=max_age
         )
 
