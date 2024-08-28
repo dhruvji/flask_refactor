@@ -568,7 +568,7 @@ def test_flashes(app, req_ctx):
     flask.session.modified = False
     flask.flash("Zip")
     assert flask.session.modified
-    assert list(flask.get_flashed_messages()) == ["Zap", "Zip"]
+    assert list(flask.get_flashed_messages(log=True)) == ["Zap", "Zip"]
 
 
 def test_extended_flashing(app):
@@ -587,7 +587,7 @@ def test_extended_flashing(app):
 
     @app.route("/test/")
     def test():
-        messages = flask.get_flashed_messages()
+        messages = flask.get_flashed_messages(log=True)
         assert list(messages) == [
             "Hello World",
             "Hello World",
@@ -597,7 +597,7 @@ def test_extended_flashing(app):
 
     @app.route("/test_with_categories/")
     def test_with_categories():
-        messages = flask.get_flashed_messages(with_categories=True)
+        messages = flask.get_flashed_messages(log=True, with_categories=True)
         assert len(messages) == 3
         assert list(messages) == [
             ("message", "Hello World"),
@@ -609,7 +609,7 @@ def test_extended_flashing(app):
     @app.route("/test_filter/")
     def test_filter():
         messages = flask.get_flashed_messages(
-            category_filter=["message"], with_categories=True
+            log=True, category_filter=["message"], with_categories=True
         )
         assert list(messages) == [("message", "Hello World")]
         return ""
@@ -617,7 +617,7 @@ def test_extended_flashing(app):
     @app.route("/test_filters/")
     def test_filters():
         messages = flask.get_flashed_messages(
-            category_filter=["message", "warning"], with_categories=True
+            log=True, category_filter=["message", "warning"], with_categories=True
         )
         assert list(messages) == [
             ("message", "Hello World"),
@@ -627,7 +627,7 @@ def test_extended_flashing(app):
 
     @app.route("/test_filters_without_returning_categories/")
     def test_filters2():
-        messages = flask.get_flashed_messages(category_filter=["message", "warning"])
+        messages = flask.get_flashed_messages(log=True, category_filter=["message", "warning"])
         assert len(messages) == 2
         assert messages[0] == "Hello World"
         assert messages[1] == Markup("<em>Testing</em>")

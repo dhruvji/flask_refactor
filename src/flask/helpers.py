@@ -331,7 +331,9 @@ def flash(message: str, category: str = "message") -> None:
 
 
 def get_flashed_messages(
-    with_categories: bool = False, category_filter: t.Iterable[str] = ()
+    with_categories: bool = False, 
+    category_filter: t.Iterable[str] = (), 
+    log: bool = False
 ) -> list[str] | list[tuple[str, str]]:
     """Pulls all flashed messages from the session and returns them.
     Further calls in the same request to the function will return
@@ -360,16 +362,26 @@ def get_flashed_messages(
     :param with_categories: set to ``True`` to also receive categories.
     :param category_filter: filter of categories to limit return values.  Only
                             categories in the list will be returned.
+    :param log: set to ``True`` to log the flashed messages.
     """
     flashes = request_ctx.flashes
     if flashes is None:
         flashes = session.pop("_flashes") if "_flashes" in session else []
         request_ctx.flashes = flashes
+    
+    if log:
+        log_messages = flashes if with_categories else [x[1] for x in flashes]
+        # Log the flashed messages (this is a placeholder, replace with your logging implementation)
+        print(f"Flashed messages: {log_messages}")
+
     if category_filter:
         flashes = list(filter(lambda f: f[0] in category_filter, flashes))
+    
     if not with_categories:
         return [x[1] for x in flashes]
+    
     return flashes
+
 
 
 def _prepare_send_file_kwargs(**kwargs: t.Any) -> dict[str, t.Any]:
