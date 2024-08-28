@@ -210,7 +210,7 @@ def test_json_attr(app, client):
 def test_tojson_filter(app, req_ctx):
     # The tojson filter is tested in Jinja, this confirms that it's
     # using Flask's dumps.
-    rv = flask.render_template_string(
+    rv = flask.render_template_str(
         "const data = {{ data|tojson }};",
         data={"name": "</script>", "time": datetime.datetime(2021, 2, 1, 7, 15)},
     )

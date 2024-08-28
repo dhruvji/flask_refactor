@@ -276,7 +276,7 @@ Template Rendering
 
 .. autofunction:: render_template
 
-.. autofunction:: render_template_string
+.. autofunction:: render_template_str
 
 .. autofunction:: stream_template
 

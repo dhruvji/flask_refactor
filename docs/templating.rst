@@ -21,7 +21,7 @@ Unless customized, Jinja2 is configured by Flask as follows:
     ``.htm``, ``.xml``, ``.xhtml``, as well as ``.svg`` when using
     :func:`~flask.templating.render_template`.
 -   autoescaping is enabled for all strings when using
-    :func:`~flask.templating.render_template_string`.
+    :func:`~flask.templating.render_template_str`.
 -   a template has the ability to opt in/out autoescaping with the
     ``{% autoescape %}`` tag.
 -   Flask inserts a couple of global functions and helpers into the

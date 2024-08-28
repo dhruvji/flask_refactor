@@ -150,7 +150,7 @@ def render_template(
     return _render(app, template, context)
 
 
-def render_template_string(source: str, **context: t.Any) -> str:
+def render_template_str(source: str, **context: t.Any) -> str:
     """Render a template from the given source string with the given
     context.
 

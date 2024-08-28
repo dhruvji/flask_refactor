@@ -161,7 +161,7 @@ def test_custom_app_ctx_globals_class(app):
 
     app.app_ctx_globals_class = CustomRequestGlobals
     with app.app_context():
-        assert flask.render_template_string("{{ g.spam }}") == "eggs"
+        assert flask.render_template_str("{{ g.spam }}") == "eggs"
 
 
 def test_context_refcounts(app, client):

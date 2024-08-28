@@ -635,7 +635,7 @@ def test_context_processing(app, client):
     answer_bp = flask.Blueprint("answer_bp", __name__)
 
     def template_string():
-        return flask.render_template_string(
+        return flask.render_template_str(
             "{% if notanswer %}{{ notanswer }} is not the answer. {% endif %}"
             "{% if answer %}{{ answer }} is the answer.{% endif %}"
         )
@@ -689,7 +689,7 @@ def test_template_global(app):
     assert app.jinja_env.globals["get_answer"]() == 42
 
     with app.app_context():
-        rv = flask.render_template_string("{{ get_answer() }}")
+        rv = flask.render_template_str("{{ get_answer() }}")
         assert rv == "42"
 
 
@@ -909,7 +909,7 @@ def test_nested_callback_order(app, client):
 
     @child.route("/b")
     def b():
-        return flask.render_template_string("{{ key }}")
+        return flask.render_template_str("{{ key }}")
 
     parent.register_blueprint(child)
     app.register_blueprint(parent)

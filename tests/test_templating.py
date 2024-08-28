@@ -24,7 +24,7 @@ def test_context_processing(app, client):
 def test_original_win(app, client):
     @app.route("/")
     def index():
-        return flask.render_template_string("{{ config }}", config=42)
+        return flask.render_template_str("{{ config }}", config=42)
 
     rv = client.get("/")
     assert rv.data == b"42"
@@ -46,7 +46,7 @@ def test_request_less_rendering(app, app_ctx):
     def context_processor():
         return dict(foo=42)
 
-    rv = flask.render_template_string("Hello {{ config.WORLD_NAME }} {{ foo }}")
+    rv = flask.render_template_str("Hello {{ config.WORLD_NAME }} {{ foo }}")
     assert rv == "Hello Special World 42"
 
 
@@ -55,7 +55,7 @@ def test_standard_context(app, client):
     def index():
         flask.g.foo = 23
         flask.session["test"] = "aha"
-        return flask.render_template_string(
+        return flask.render_template_str(
             """
             {{ request.args.foo }}
             {{ g.foo }}
@@ -111,7 +111,7 @@ def test_no_escaping(app, client):
 
 
 def test_escaping_without_template_filename(app, client, req_ctx):
-    assert flask.render_template_string("{{ foo }}", foo="<test>") == "&lt;test&gt;"
+    assert flask.render_template_str("{{ foo }}", foo="<test>") == "&lt;test&gt;"
     assert flask.render_template("mail.txt", foo="<test>") == "<test> Mail"
 
 
@@ -317,7 +317,7 @@ def test_add_template_global(app, app_ctx):
     assert app.jinja_env.globals["get_stuff"] == get_stuff
     assert app.jinja_env.globals["get_stuff"](), 42
 
-    rv = flask.render_template_string("{{ get_stuff() }}")
+    rv = flask.render_template_str("{{ get_stuff() }}")
     assert rv == "42"
 
 
