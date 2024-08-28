@@ -204,7 +204,7 @@ def stream_template(
     return _stream(app, template, context)
 
 
-def stream_template_string(source: str, **context: t.Any) -> t.Iterator[str]:
+def stream_template_str(source: str, **context: t.Any) -> t.Iterator[str]:
     """Render a template from the given source string with the given
     context as a stream. This returns an iterator of strings, which can
     be used as a streaming response from a view.

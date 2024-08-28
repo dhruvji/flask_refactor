@@ -38,7 +38,7 @@ from .signals import template_rendered as template_rendered
 from .templating import render_template as render_template
 from .templating import render_template_string as render_template_string
 from .templating import stream_template as stream_template
-from .templating import stream_template_string as stream_template_string
+from .templating import stream_template_str as stream_template_string
 from .wrappers import Request as Request
 from .wrappers import Response as Response
 
