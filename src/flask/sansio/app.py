@@ -492,7 +492,7 @@ class App(Scaffold):
         if instance_relative:
             root_path = self.instance_path
         defaults = dict(self.default_config)
-        defaults["DEBUG"] = get_debug_flag()
+        defaults["DEBUG"] = get_debug_flag(log=True)
         return self.config_class(root_path, defaults)
 
     def make_aborter(self) -> Aborter:

@@ -605,7 +605,7 @@ class Flask(App):
 
             # if set, env var overrides existing value
             if "FLASK_DEBUG" in os.environ:
-                self.debug = get_debug_flag()
+                self.debug = get_debug_flag(log=True)
 
         # debug passed to method overrides all other sources
         if debug is not None:

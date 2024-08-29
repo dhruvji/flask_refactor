@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import os
+import logging
 import sys
 import typing as t
 from datetime import datetime
@@ -24,12 +25,23 @@ if t.TYPE_CHECKING:  # pragma: no cover
     from .wrappers import Response
 
 
-def get_debug_flag() -> bool:
+def get_debug_flag(log: bool = False) -> bool:
     """Get whether debug mode should be enabled for the app, indicated by the
     :envvar:`FLASK_DEBUG` environment variable. The default is ``False``.
+    
+    Args:
+        log (bool): If True, logs the value of the FLASK_DEBUG environment variable and the resulting debug flag.
+    
+    Returns:
+        bool: True if debug mode should be enabled, False otherwise.
     """
     val = os.environ.get("FLASK_DEBUG")
-    return bool(val and val.lower() not in {"0", "false", "no"})
+    debug_flag = bool(val and val.lower() not in {"0", "false", "no"})
+    
+    if log:
+        logging.info(f"FLASK_DEBUG={val!r}, debug_flag={debug_flag}")
+    
+    return debug_flag
 
 
 def get_load_dotenv(default: bool = True) -> bool:

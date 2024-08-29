@@ -352,7 +352,7 @@ class ScriptInfo:
         if self.set_debug_flag:
             # Update the app's debug flag through the descriptor so that
             # other values repopulate as well.
-            app.debug = get_debug_flag()
+            app.debug = get_debug_flag(log=True)
 
         self._loaded_app = app
         return app
@@ -952,7 +952,7 @@ def run_command(
             # command fails.
             raise e from None
 
-    debug = get_debug_flag()
+    debug = get_debug_flag(log=True)
 
     if reload is None:
         reload = debug
